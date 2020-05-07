@@ -25,7 +25,7 @@ class ProducteursSeeder extends Seeder
                         $p->recompense()->saveMany(factory(RecompensesModel::class, 1)->make());
                     })
                     ->each(function ($f) {
-                        $f->fruit()->saveMany(factory(FruitsModel::class, 1)->make());
+                        $f->fruit()->saveMany(factory(FruitsModel::class, 2)->make());
                     });
             });
     }

@@ -15,8 +15,4 @@ class RecompensesModel extends Model
         return $this->belongsToMany('App\ConfituresModel', 'confiture_has_recompense', 'id_confiture', 'id_recompense');
     }
 
-    public function confiture_recompense()
-    {
-        return $this->hasMany('App\ConfitureRecompense');
-    }
 }

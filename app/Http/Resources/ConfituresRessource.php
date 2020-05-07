@@ -20,8 +20,8 @@ class ConfituresRessource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'id_producteur' => $producteur,
-            'recompense' => $this->recompense->load('confiture'),
-            'fruit' => $this->fruit->load('confiture')
+            'recompense' => $this->recompense,
+            'fruit' => $this->fruit
 
         ];
     }

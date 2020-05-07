@@ -12,6 +12,6 @@ class FruitsSeeder extends Seeder
      */
     public function run()
     {
-        factory(FruitsModel::class, 5)->create();
+        factory(FruitsModel::class, 2)->create();
     }
 }

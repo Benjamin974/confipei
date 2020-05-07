@@ -19,4 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/confiture', 'ConfituresController@index');
+Route::get('/confitures', 'ConfituresController@index');
+Route::post('/confitures', 'ConfituresController@addProduct');
+Route::get('/fruits', 'ConfituresController@viewFruits');
+Route::get('/acfruits', 'ConfituresController@autoComplete');
