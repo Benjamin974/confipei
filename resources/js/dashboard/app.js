@@ -5,7 +5,6 @@ import Layout from './layouts/Layout.vue';
 import 'vuetify/dist/vuetify.min.css';
 import _ from 'lodash';
 
-
 Vue.use(Vuetify);
 
 const app = new Vue({

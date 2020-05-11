@@ -23,3 +23,6 @@ Route::get('/confitures', 'ConfituresController@index');
 Route::post('/confitures', 'ConfituresController@addProduct');
 Route::get('/fruits', 'ConfituresController@viewFruits');
 Route::get('/acfruits', 'ConfituresController@autoComplete');
+
+Route::post('login', 'AuthController@login');
+Route::get('logout', 'AuthController@logout');

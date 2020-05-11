@@ -21,7 +21,6 @@ const router = new VueRouter({
         path: '/login',
         name: 'login',
         component: Login,
-        meta: { authorize: [] }
     },
     {
         path: '/dashboard',
