@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ConfituresModel extends Model
 {
     protected $table = 'confitures';
-    protected $fillable = ['name', 'prix', 'id_producteur'];
+    protected $fillable = ['id', 'name', 'prix', 'id_producteur'];
     public $timestamps = false;
 
     function producteur(){

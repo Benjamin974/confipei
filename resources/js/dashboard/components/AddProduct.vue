@@ -1,15 +1,15 @@
-<template v-slot:top>
+<template>
   <v-row>
     <v-dialog v-model="dialog" persistent max-width="700px">
       <template v-slot:activator="{ on }">
         <v-btn class="ma-2" dark v-on="on" tile outlined color="brown">
-          <v-icon left>mdi-shape-square-plus</v-icon>Ajouer un produit
+          <v-icon left>mdi-shape-square-plus</v-icon>Ajouter un produit
         </v-btn>
       </template>
       <v-card>
         <v-form id="addFruit" @submit="ajout">
           <v-card-title>
-            <span class="headline">Ajouer un produit</span>
+            <span class="headline">Ajouter un produit</span>
           </v-card-title>
 
           <v-card-text>
@@ -20,9 +20,6 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field v-model="prix" :rules="prixRules" label="Prix" required></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="fruits" :rules="fruitsRules" label="fruits" required></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-select
@@ -42,13 +39,21 @@
                     v-model="acfruits"
                     :loading="loading"
                     :items="listFruits"
+                    item-text="name"
+                    @input="createFruit"
                     :search-input.sync="search"
                     return-object
                     hide-no-data
                     hide-details
                     multiple
-                    label="fruits"
-                  ></v-autocomplete>
+                    label="fruit"
+                  >
+                    <template>
+                      <v-btn icon color="success" :disabled="listFruits.length == 0">
+                        <v-icon>mdi-plus-circle</v-icon>
+                      </v-btn>
+                    </template>
+                  </v-autocomplete>
                 </v-col>
               </v-row>
             </v-container>

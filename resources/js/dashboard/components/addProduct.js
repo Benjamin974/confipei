@@ -5,15 +5,19 @@ export default {
     components: {
         SearchFruits
     },
-    props: ["datas"],
 
+    props: {
+        default: {
+            selectProducteur: {},
+        },
+    },
     data() {
         return {
             query: '',
             results: [],
             valeurProducteur: {},
             resultFruits: {},
-            selectProducteur: {},
+            // selectProducteur: {},
             itemsProducteur: [],
             itemsFruits: [],
             dialog: false,
@@ -54,7 +58,7 @@ export default {
                     .then(({ data }) => {
                         this.loading = false;
                         data.forEach(product => {
-                            this.listFruits.push(product.name)
+                            this.listFruits.push(product)
 
                         });
 
@@ -64,18 +68,26 @@ export default {
     },
     methods: {
         ajout() {
+            // le fruit doit avoir soit id et name soit juste name
             axios.post('/api/confitures/', {
                 id_producteur: this.selectProducteur.id,
                 name: this.name,
                 prix: this.prix,
+                fruit: this.listFruits
 
             }).then(response => {
                 this.dialog = false;
                 this.$emit('addProduct', response.data.data)
                 this.snackbar = true;
-                this.text = 'Le programme a bien été ajouté'
+                this.text = 'Le produit a bien été ajouté'
             }).catch()
         },
+
+        createFruit($val) {
+            console.log($val)
+        },
+
+        
 
         recupId() {
             // console.log(Object.values(this.items));
