@@ -2,8 +2,9 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from './views/Home.vue';
 import Dashboard from './views/Dashboard.vue';
+import Producteur from './views/Producteur.vue';
 import Login from './login/Login.vue';
-
+import CartesConfitures from './views/CartesConfitures.vue';
 import { Role } from './_helpers/role';
 import { authenticationService } from "./_services/authentication.service";
 
@@ -26,7 +27,17 @@ const router = new VueRouter({
         path: '/dashboard',
         name: 'dashboard',
         component: Dashboard,
-        // meta: { authorize: [Role.Admin] }
+        meta: { authorize: [Role.Admin] }
+    },
+    {
+        path: '/confitures',
+        name: 'confitures',
+        component: CartesConfitures,
+    },{
+        path: '/producteur/:id',
+        name: 'producteur',
+        component: Producteur,
+        meta: { authorize: [Role.Admin] }
     },
     ]
 })
@@ -47,14 +58,17 @@ router.beforeEach((to, from, next) => {
         }
 
         // check if route is restricted by role
-        if (authorize.length && !authorize.includes(currentUser.role.name)) {
+        if (authorize.length && !authorize.includes(currentUser.id_role.name)) {
             // role not authorised so redirect to home page
             return next({ path: "/" });
         }
 
     }
 
-    next();
+    return next();
 });
+
+
+
 
 export default router;

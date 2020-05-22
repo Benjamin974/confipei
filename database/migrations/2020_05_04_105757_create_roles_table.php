@@ -16,16 +16,13 @@ class CreateRolesTable extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-         
         });
 
         Schema::table('users', function (Blueprint $table) {
-         
-            $table->bigInteger('id_role')->unsigned();
-            $table->foreign('id_role')->references('id')->on('roles');
-        
-        });
 
+            $table->bigInteger('id_role')->unsigned();
+            $table->foreign('id_role')->references('id')->on('role');
+        });
     }
 
     /**
@@ -34,14 +31,10 @@ class CreateRolesTable extends Migration
      * @return void
      */
     public function down()
-    
+
     {
         Schema::disableForeignKeyConstraints();
-
-        Schema::dropIfExists('users');
-
-        Schema::enableForeignKeyConstraints();
-
         Schema::dropIfExists('roles');
+        Schema::enableForeignKeyConstraints();
     }
 }

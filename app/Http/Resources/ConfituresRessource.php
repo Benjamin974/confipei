@@ -15,12 +15,14 @@ class ConfituresRessource extends JsonResource
     public function toArray($request)
     {
         $id_producteur = new ProducteursRessource($this->producteur);
+        $id_photo = new PhotosResource($this->photo);
         
         return [
             'id' => $this->id,
             'name' => $this->name,
             'prix' => $this->prix,
             'id_producteur' => $id_producteur,
+            'id_photo' => $id_photo,
             'recompense' => $this->recompense,
             'fruit' => $this->fruit
 

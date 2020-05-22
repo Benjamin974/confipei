@@ -2,14 +2,16 @@
   <v-row>
     <v-dialog v-model="dialog" persistent max-width="700px">
       <template v-slot:activator="{ on }">
-        <v-btn class="ma-2" dark v-on="on" tile outlined color="brown">
+        <v-btn v-if="!modifier" class="ma-2" dark v-on="on" tile outlined color="brown">
           <v-icon left>mdi-shape-square-plus</v-icon>Ajouter un produit
-        </v-btn>
+        </v-btn> 
+        <v-icon v-if="modifier" @click="editConfiture" v-on="on" left>mdi-pencil</v-icon>
       </template>
       <v-card>
         <v-form id="addFruit" @submit="ajout">
           <v-card-title>
-            <span class="headline">Ajouter un produit</span>
+            <span class="headline" v-if="!modifier">Ajouter un produit</span>
+            <span class="headline" v-if="modifier">modifier un produit</span>
           </v-card-title>
 
           <v-card-text>
@@ -24,11 +26,22 @@
                 <v-col cols="12" sm="6" md="4">
                   <v-select
                     :rules="id_producteurRules"
-                    v-model="selectProducteur"
-                    :items="itemsProducteur"
+                    v-model="producteur"
+                    :items="producteurs"
                     item-text="name"
-                    item-value="id_producteur"
                     label="producteur"
+                    persistent-hint
+                    return-object
+                    single-line
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select
+                    :rules="id_producteurRules"
+                    v-model="photoInput"
+                    :items="photosGet"
+                    item-text="photo"
+                    label="photo"
                     persistent-hint
                     return-object
                     single-line
@@ -40,7 +53,6 @@
                     :loading="loading"
                     :items="listFruits"
                     item-text="name"
-                    @input="createFruit"
                     :search-input.sync="search"
                     return-object
                     hide-no-data
@@ -55,6 +67,7 @@
                     </template>
                   </v-autocomplete>
                 </v-col>
+                
               </v-row>
             </v-container>
           </v-card-text>

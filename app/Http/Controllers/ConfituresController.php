@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\ConfituresModel;
 use App\FruitsModel;
 use App\Http\Resources\ConfituresRessource;
+use App\Http\Resources\PhotosResource;
+use App\Http\Resources\ProducteursRessource;
+use App\PhotosModel;
 use App\ProducteursModel;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -16,12 +20,12 @@ class ConfituresController extends Controller
     {
         $dataConfi = ConfituresModel::with([
             'recompense',
-            'fruit'
+            'fruit',
         ])->get();
         return ConfituresRessource::collection($dataConfi);
     }
 
-    public function addProduct(Request $request)
+    public function addOrUpdateProduct(Request $request)
     {
         $validator = Validator::make(
             $request->all(),
@@ -29,60 +33,147 @@ class ConfituresController extends Controller
                 'name' => 'required',
                 'prix' => 'required',
                 'id_producteur' => 'required',
-                'fruit' => ''
+                'fruit' => '',
+                'id_photo' => 'required',
+                'id' => ''
                 
+
             ],
             [
                 'required' => 'Le champs :attribute est requis', // :attribute renvoie le champs / l'id de l'element en erreure
             ]
         )->validate();
 
-        $donneesBdd = new ConfituresModel;
-        $donneesBdd->name = $validator['name'];
-        $donneesBdd->prix = $validator['prix'];
-        $producteur = ProducteursModel::find($validator['id_producteur']);
-        if(!$producteur) {
-            return 'error';
+        $confiture = ConfituresModel::with(['producteur', 'fruit', 'photo'])->find($validator['id']);
+
+        if (!$confiture) {
+            $dataConfiture = new ConfituresModel;
+        } else {
+            $dataConfiture = $confiture;
         }
-        $donneesBdd->producteur()->associate($producteur);
-        $donneesBdd->save();
 
-        $fruits = [];
-        if(is_array($validator['fruit'])) {
-            foreach ($validator['fruit'] as $_fruit) {
-                if(isset($_fruit['id'])) {
-                    $fruit = FruitsModel::find($_fruit['id']);
-                    if(!$fruit) {
-                        return 'error fruit';
-                    }
-                    $fruits[] = $fruit->id;
-                } else {
-                    return "id existe pas";
+        if (isset($dataConfiture)) {
 
-                    // On va créer un objet par la suite fruit:{name:''}
+            $dataConfiture->name = $validator['name'];
+            $dataConfiture->prix = $validator['prix'];
+            if ($confiture && isset($confiture->producteur) && $validator['id_producteur'] != $confiture->producteur->id) {
+                $producteur = ProducteursModel::find($validator['id_producteur']);
+                if (!$producteur) {
+                    return 'error';
+                }
+                $dataConfiture->producteur()->associate($producteur);
+                $dataConfiture->save();
+            } 
+            if ($confiture && isset($confiture->id_photo) && $validator['id_photo'] != $confiture->photo->id) {
+                $photo = PhotosModel::find($validator['id_photo']);
+                if (!$photo) {
+                    return 'error';
+                }
+                $dataConfiture->photo()->associate($photo);
+            } 
+
+            $dataConfiture->save();
+
+
+            $clientFruits = $validator['fruit'];
+            $confiFruits = []; //stocké les id de la table pivot
+            $toDetach = [];
+            $toAttach = [];
+            $idClientFruits = [];
+
+
+            foreach ($clientFruits as $_clientFruits) {
+                $idClientFruits[] = $_clientFruits['id']; // {{id, nom}, id}
+            }
+
+            // je veux {id}
+
+            if ($confiture && isset($confiture->fruit)) {
+                foreach ($confiture->fruit as $_fruit) {
+                    $confiFruits[] = $_fruit->id;
                 }
             }
-        }
-        if (!empty($fruits)) {
-            $donneesBdd->fruit()->attach($fruits);
-        }
 
-        return  new ConfituresRessource($donneesBdd);
+            // on verifie les ids présent
+            foreach ($confiFruits as $id) {
+                if (!in_array($id, $idClientFruits)) {
+                    $toDetach[] = $id;
+                }
+            }
+
+            // on verifie les ressemblance
+            foreach ($idClientFruits as $id) {
+                if (!in_array($id, $confiFruits)) {
+                    $toAttach[] = $id;
+                }
+            }
+
+            if (!empty($toDetach)) {
+                $dataConfiture->fruit()->detach($toDetach);
+            }
+
+            if (!empty($toAttach)) {
+                $dataConfiture->fruit()->attach($toAttach);
+            }
+
+            return new ConfituresRessource($dataConfiture);
+        }
     }
+
 
     public function autoComplete(Request $request)
     {
 
-        
+
         if ($request->get('query')) {
             $query = $request->get('query');
             $users = FruitsModel::where('name', 'like', '%' . $query . '%')->get();
-            return response()->json($users);
-
+            return $users;
         }
     }
 
-    public function viewFruits() {
-        return FruitsModel::all();
+    public function addConfituresProducteur(Request $request, $id) {
+        $dataConfi = ConfituresModel::where('id_producteur', '=', $id)->get(); 
+        return ConfituresRessource::collection($dataConfi);
     }
+
+    public function addConfituresProducteurName(Request $request, $id) {
+        $dataConfi = ProducteursModel::find($id); 
+        return new ProducteursRessource($dataConfi);
+    }
+
+    public function  AddImage(Request $request)
+    {
+
+        $img = $request->get('photo');
+
+        $exploded = explode(",", $img);
+
+        if (str::contains($exploded[0], 'gif')) {
+            $ext = 'gif';
+        } else if (str::contains($exploded[0], 'png')) {
+            $ext = 'png';
+        } else {
+            $ext = 'jpg';
+        }
+
+        $decode = base64_decode($exploded[1]);
+
+        $filename = str::random() . "." . $ext;
+
+
+        $path = public_path() . "/storage/imgs/" . $filename;
+
+        if (file_put_contents($path, $decode)) {
+            echo "fichier téléchargé et envoyé dans: " . "/storage/imgs/" . $filename;
+
+            $dataPhoto = new PhotosModel();
+            
+            $dataPhoto->photo = "/storage/imgs/" . $filename;
+            $dataPhoto->save();
+
+            return new PhotosResource($dataPhoto);
+        }
+    }
+
 }

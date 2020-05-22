@@ -1,11 +1,10 @@
 import Axios from 'axios';
 import AddProduct from '../components/AddProduct.vue';
-import Modal from '../components/Modal.vue';
 
 export default {
+
     components: {
         AddProduct,
-        Modal
     },
     data: () => ({
         dialog: false,
@@ -17,7 +16,9 @@ export default {
         },
         { text: "producteurs", value: "id_producteur" },
         { text: "fruits", value: "fruit" },
+        { text: "photos", value: "id_photo" },
         { text: "actions", value: "actions" },
+
 
 
         ],
@@ -25,8 +26,11 @@ export default {
             Confitures: '',
             producteurs: '',
             fruits: '',
-          },
-        datas: [],
+            photos: '',
+        },
+        confitures: [],
+        showModal: false,
+        photo: '',
 
     }),
     created() {
@@ -35,9 +39,10 @@ export default {
 
     methods: {
         initialize() {
+
             Axios.get("/api/confitures").then(({ data }) =>
                 data.data.forEach(_data => {
-                    this.datas.push(_data);
+                    this.confitures.push(_data);
                 })
             );
         },
@@ -57,8 +62,38 @@ export default {
 
         deleteItem(item) {
             console.log(item);
+        },
+
+        onFileSelected(e) {
+            let files = e.target.files || e.dataTransfer.files;
+            this.createImg(files[0]);
+        },
+        createImg(file) {
+            let reader = new FileReader;
+
+            reader.onload = (e) => {
+                this.photo = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
+
+        greet: function uploadImg() {
+            axios.post('/api/confitures/image/', {
+                photo: this.photo,
+            })
+                .then(function ({ data }) {
+                    console.log(data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+        },
+
+        removeImg() {
+            this.photo = "";
         }
 
-    }
+    },
 
 }

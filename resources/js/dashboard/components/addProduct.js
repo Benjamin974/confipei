@@ -2,28 +2,40 @@ import Axios from "axios"
 import SearchFruits from '../components/SearchFruits.vue';
 
 export default {
+    props: {
+        confitures: {
+            default: function () {
+                return {}
+            }
+        },
+
+        modifier: {
+            default: false
+        },
+    },
     components: {
         SearchFruits
     },
 
-    props: {
-        default: {
-            selectProducteur: {},
-        },
-    },
     data() {
         return {
+
+
             query: '',
-            results: [],
-            valeurProducteur: {},
+
+            producteur: {},
+            producteurs: [],
+
             resultFruits: {},
-            // selectProducteur: {},
-            itemsProducteur: [],
             itemsFruits: [],
+
             dialog: false,
             snackbar: false,
+            search: null,
+            loading: false,
             text: '',
             timeout: 3000,
+
             id_producteur: '',
             id_producteurRules: [
                 v => !!v || 'Un Producteur est requise',
@@ -41,11 +53,13 @@ export default {
             fruitsRules: [
                 v => !!v || 'Un fruit ou plusieurs est requise',
             ],
+            id: '',
 
             acfruits: [],
-            search: null,
-            loading: false,
             listFruits: [],
+
+            photosGet: [],
+            photoInput: {},
 
         }
     },
@@ -69,63 +83,81 @@ export default {
     methods: {
         ajout() {
             // le fruit doit avoir soit id et name soit juste name
-            axios.post('/api/confitures/', {
-                id_producteur: this.selectProducteur.id,
-                name: this.name,
-                prix: this.prix,
-                fruit: this.listFruits
+            if (!this.modifier) {
+                axios.post('/api/confitures/', {
+                    id_producteur: this.producteur.id,
+                    id_photo: this.photoInput.id,
+                    name: this.name,
+                    prix: this.prix,
+                    fruit: this.acfruits,
+                    id: this.id == '' ? '' : this.id,
 
-            }).then(response => {
-                this.dialog = false;
-                this.$emit('addProduct', response.data.data)
-                this.snackbar = true;
-                this.text = 'Le produit a bien été ajouté'
-            }).catch()
+                }).then(response => {
+                    this.dialog = false;
+                    this.$emit('addProduct', response.data.data)
+                    this.snackbar = true;
+                    this.text = 'Le produit a bien été ajouté'
+                }).catch()
+            }
+            else if (this.modifier) {
+                axios.post('/api/confitures/', {
+                    id_producteur: this.producteur.id,
+                    id_photo: this.photoInput.id,
+                    name: this.name,
+                    prix: this.prix,
+                    fruit: this.acfruits,
+                    id: this.id == '' ? '' : this.id,
+
+                }).then(response => {
+                    this.$emit('addProduct', response.data.data)
+                    this.dialog = false;
+                    this.snackbar = true;
+                    this.text = 'Le produit a bien été modifier'
+                }).catch()
+
+            }
+
         },
 
-        createFruit($val) {
-            console.log($val)
+        editConfiture() {
+            this.id = this.confitures.id
+            this.name = this.confitures.name
+            this.prix = this.confitures.prix
+            this.producteur = this.confitures.id_producteur
+            this.photoInput = this.confitures.id_photo
+            this.acfruits = this.confitures.fruit
+            _.merge(this.listFruits, this.acfruits)
+
         },
 
-        
 
-        recupId() {
-            // console.log(Object.values(this.items));
-            this.valeurProducteur = {};
-            Axios.get('/api/confitures')
-                .then(({ data }) => {
-                    // console.log(data.data);
-                    data.data.forEach(_confitures => {
-                        this.valeurProducteur = Object.create({}, { name: { value: _confitures.id_producteur.name }, id: { value: _confitures.id_producteur.id } });
-                        this.itemsProducteur.push(this.valeurProducteur);
-
-                    })
-
+        getProducteur() {
+            Axios.get("/api/confitures").then(({ data }) =>
+                data.data.forEach(data => {
+                    this.producteurs.push(data.id_producteur);
                 })
-                .catch();
+            );
+
+
+        },
+        getPhotos() {
+            Axios.get("/api/confitures").then(({ data }) =>
+                data.data.forEach(data => {
+                    this.photosGet.push(data.id_photo);
+                })
+            );
+
 
         },
 
-        viewFruits() {
+       
 
-            axios.get('/api/fruits')
-                .then(({ data }) => {
-                    data.forEach(product => {
-                        // console.log(product.name)
-                        this.resultFruits = Object.create({}, { name: { value: product.name }, id: { value: product.id } });
-                        // console.log(this.resultFruits);
-                        this.itemsFruits.push(this.resultFruits);
-
-                    });
-
-                });
-        },
     },
 
 
     created() {
-        this.recupId();
-        this.viewFruits();
-        console.log(this.itemsFruits);
+
+        this.getProducteur();
+        this.getPhotos();
     }
 }

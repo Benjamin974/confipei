@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class FruitsModel extends Model
 {
     protected $table = 'fruits';
-    protected $fillable = ['name', 'username', 'email'];
+    protected $fillable = ['id', 'name', 'username', 'email'];
     public $timestamps = false;
 
     public function confiture()

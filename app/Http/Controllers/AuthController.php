@@ -21,6 +21,7 @@ class AuthController extends Controller
 
         $accessToken = Auth::user()->createToken('authToken')->accessToken;
         return new UsersResource(Auth::user($accessToken), $accessToken);
+
     }
 
     public function logout() {
