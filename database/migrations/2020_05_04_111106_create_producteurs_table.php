@@ -16,6 +16,7 @@ class CreateProducteursTable extends Migration
         Schema::create('producteurs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            
           
         });
 

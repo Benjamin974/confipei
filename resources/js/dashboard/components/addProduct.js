@@ -58,8 +58,7 @@ export default {
             acfruits: [],
             listFruits: [],
 
-            photosGet: [],
-            photoInput: {},
+            image: ''
 
         }
     },
@@ -86,10 +85,10 @@ export default {
             if (!this.modifier) {
                 axios.post('/api/confitures/', {
                     id_producteur: this.producteur.id,
-                    id_photo: this.photoInput.id,
                     name: this.name,
                     prix: this.prix,
                     fruit: this.acfruits,
+                    image: this.image,
                     id: this.id == '' ? '' : this.id,
 
                 }).then(response => {
@@ -102,10 +101,10 @@ export default {
             else if (this.modifier) {
                 axios.post('/api/confitures/', {
                     id_producteur: this.producteur.id,
-                    id_photo: this.photoInput.id,
                     name: this.name,
                     prix: this.prix,
                     fruit: this.acfruits,
+                    image: this.image,
                     id: this.id == '' ? '' : this.id,
 
                 }).then(response => {
@@ -124,7 +123,6 @@ export default {
             this.name = this.confitures.name
             this.prix = this.confitures.prix
             this.producteur = this.confitures.id_producteur
-            this.photoInput = this.confitures.id_photo
             this.acfruits = this.confitures.fruit
             _.merge(this.listFruits, this.acfruits)
 
@@ -140,17 +138,15 @@ export default {
 
 
         },
-        getPhotos() {
-            Axios.get("/api/confitures").then(({ data }) =>
-                data.data.forEach(data => {
-                    this.photosGet.push(data.id_photo);
-                })
-            );
 
+        onFileChange(file) {
+            let reader = new FileReader;
 
+            reader.onload = (file) => {
+                this.image = file.target.result;
+            };
+            reader.readAsDataURL(file);
         },
-
-       
 
     },
 
@@ -158,6 +154,5 @@ export default {
     created() {
 
         this.getProducteur();
-        this.getPhotos();
     }
 }

@@ -10,7 +10,50 @@
       <v-btn class="mr-4 deep-purple" to="/confitures">Confitures</v-btn>
     </v-tab>
     <v-tab>
-      <v-btn class="mr-4 deep-purple" to="/">autre</v-btn>
+      <v-btn v-if="!isChecked" v-on:click="show" class="mr-4" to="/login">
+        <v-icon class="mr-1">mdi-login</v-icon>Login
+      </v-btn>
+
+      <v-btn v-if="isChecked" @click="logout" class="nav-item nav-link">
+        <v-icon class="mr-1">mdi-logout</v-icon>Logout
+      </v-btn>
     </v-tab>
   </v-tabs>
 </template>
+
+<script>
+import { authenticationService } from "../_services/authentication.service";
+import { Role } from "../_helpers/role";
+import router from "../route";
+export default {
+  data() {
+    return {
+       currentUser: null,
+    }
+  },
+
+  computed: {
+    isChecked() {
+      return this.currentUser;
+    },
+  },
+
+  methods: {
+
+    logout() {
+      authenticationService.logout();
+      router.push("/login");
+    },
+    show: function() {
+      this.isDisplay = true;
+    },
+    hide: function() {
+      this.isDisplay = false;
+    },
+  },
+
+    created() {
+    authenticationService.currentUser.subscribe(x => (this.currentUser = x));
+  },
+}
+</script>

@@ -34,6 +34,5 @@ export default {
     created() {
         this.initializeConfiture();
         this.recupName();
-        console.log(this.name);
     }
 }

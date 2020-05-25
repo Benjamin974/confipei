@@ -16,7 +16,7 @@ export default {
         },
         { text: "producteurs", value: "id_producteur" },
         { text: "fruits", value: "fruit" },
-        { text: "photos", value: "id_photo" },
+        { text: "photos", value: "image" },
         { text: "actions", value: "actions" },
 
 
@@ -30,7 +30,6 @@ export default {
         },
         confitures: [],
         showModal: false,
-        photo: '',
 
     }),
     created() {
@@ -64,35 +63,6 @@ export default {
             console.log(item);
         },
 
-        onFileSelected(e) {
-            let files = e.target.files || e.dataTransfer.files;
-            this.createImg(files[0]);
-        },
-        createImg(file) {
-            let reader = new FileReader;
-
-            reader.onload = (e) => {
-                this.photo = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        },
-
-        greet: function uploadImg() {
-            axios.post('/api/confitures/image/', {
-                photo: this.photo,
-            })
-                .then(function ({ data }) {
-                    console.log(data);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-        },
-
-        removeImg() {
-            this.photo = "";
-        }
 
     },
 

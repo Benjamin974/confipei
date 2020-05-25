@@ -12,8 +12,9 @@ $factory->define(ConfituresModel::class, function (Faker $faker) {
 
     return [
         "name" => $faker->firstname,
+        "image" => '/storage/imgs/muscu.jpeg',
         "prix" => $faker->buildingNumber,
         "id_producteur" =>  ProducteursModel::all()->random()->id,
-        "id_photo" => PhotosModel::all()->random()->id,
+        
     ];
 });

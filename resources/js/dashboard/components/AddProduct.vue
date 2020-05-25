@@ -4,7 +4,7 @@
       <template v-slot:activator="{ on }">
         <v-btn v-if="!modifier" class="ma-2" dark v-on="on" tile outlined color="brown">
           <v-icon left>mdi-shape-square-plus</v-icon>Ajouter un produit
-        </v-btn> 
+        </v-btn>
         <v-icon v-if="modifier" @click="editConfiture" v-on="on" left>mdi-pencil</v-icon>
       </template>
       <v-card>
@@ -36,18 +36,6 @@
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-select
-                    :rules="id_producteurRules"
-                    v-model="photoInput"
-                    :items="photosGet"
-                    item-text="photo"
-                    label="photo"
-                    persistent-hint
-                    return-object
-                    single-line
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
                   <v-autocomplete
                     v-model="acfruits"
                     :loading="loading"
@@ -67,7 +55,10 @@
                     </template>
                   </v-autocomplete>
                 </v-col>
-                
+                <v-col cols="12" sm="6" md="12">
+                  <v-file-input v-on:change="onFileChange"></v-file-input>
+                </v-col>
+                <v-img :src="confitures.image" aspect-ratio="1.9"></v-img>
               </v-row>
             </v-container>
           </v-card-text>
