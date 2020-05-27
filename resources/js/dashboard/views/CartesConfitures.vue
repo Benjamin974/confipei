@@ -19,7 +19,7 @@
         <v-col v-for="(confiture,key) in productsDisplay" :key="key" cols="12" sm="6" md="4" lg="4">
           <v-card>
             <v-card-title class="subheading font-weight-bold">{{ confiture.name }}</v-card-title>
-            <v-img :src="confiture.id_photo.photo" height="200px"></v-img>
+            <v-img :src="confiture.image" height="200px"></v-img>
             <v-card-text> Le producteur : <v-btn class="mr-4" :to="'/producteur/' + confiture.id_producteur.id">{{confiture.id_producteur.name}}</v-btn></v-card-text>
             <v-card-subtitle v-if="listFruits != null"> Les fruits : {{recupFruits(confiture.fruit)}}</v-card-subtitle>
             <v-divider></v-divider>

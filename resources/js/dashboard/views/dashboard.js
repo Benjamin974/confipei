@@ -1,6 +1,5 @@
-import Axios from 'axios';
 import AddProduct from '../components/AddProduct.vue';
-
+import {apiService} from '../_services/apiService.js';
 export default {
 
     components: {
@@ -39,7 +38,7 @@ export default {
     methods: {
         initialize() {
 
-            Axios.get("/api/confitures").then(({ data }) =>
+            apiService.get("/api/").then(({ data }) =>
                 data.data.forEach(_data => {
                     this.confitures.push(_data);
                 })

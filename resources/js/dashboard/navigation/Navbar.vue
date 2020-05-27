@@ -10,6 +10,9 @@
       <v-btn class="mr-4 deep-purple" to="/confitures">Confitures</v-btn>
     </v-tab>
     <v-tab>
+      <v-btn class="mr-4 deep-purple" :to="'/producteur/' + this.currentUser.id">Producteur</v-btn>
+    </v-tab>
+    <v-tab>
       <v-btn v-if="!isChecked" v-on:click="show" class="mr-4" to="/login">
         <v-icon class="mr-1">mdi-login</v-icon>Login
       </v-btn>

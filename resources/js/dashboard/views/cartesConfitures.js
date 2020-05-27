@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import {apiService} from '../_services/apiService.js';
 
 export default {
     data: () => ({
@@ -28,7 +28,7 @@ export default {
             if (val && val.length > 1) {
 
                 this.loading = true
-                axios.get('/api/acfruits', { params: { query: val } })
+                apiService.get('/api/acfruits', { params: { query: val } })
                     .then(({ data }) => {
                         this.loading = false;
                         data.forEach(product => {
@@ -42,7 +42,7 @@ export default {
 
     methods: {
         initializeConfiture() {
-            Axios.get("/api/confitures").then(({ data }) =>
+            apiService.get("/api/").then(({ data }) =>
                 data.data.forEach(_data => {
                     this.confitures.push(_data);
                 })

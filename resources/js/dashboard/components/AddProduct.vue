@@ -58,7 +58,12 @@
                 <v-col cols="12" sm="6" md="12">
                   <v-file-input v-on:change="onFileChange"></v-file-input>
                 </v-col>
-                <v-img :src="confitures.image" aspect-ratio="1.9"></v-img>
+                <v-img v-if="!modifier" :src="image"></v-img>
+                <v-img v-if="modifier" :src="confitures.image"></v-img>
+                <br />
+                <v-btn icon v-on:click="removeImg">
+                  <v-icon>mdi-close-circle</v-icon>
+                </v-btn>
               </v-row>
             </v-container>
           </v-card-text>

@@ -3,8 +3,6 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\ConfituresModel;
-use App\Model;
-use App\PhotosModel;
 use App\ProducteursModel;
 use Faker\Generator as Faker;
 

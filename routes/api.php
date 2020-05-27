@@ -15,20 +15,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+        return $request->user();
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::group(['middleware' => 'isAdmin'], function () {
-        Route::get('/confitures', 'ConfituresController@index');
-        Route::post('/confitures', 'ConfituresController@addOrUpdateProduct');
-        Route::post('/confitures/image/', 'ConfituresController@AddImage')->where('id', "[0-9]+");
-        Route::get('/producteurs/{id}', 'ConfituresController@addConfituresProducteur')->where('id', "[0-9]+");
-        Route::get('/producteurs/{id}/name', 'ConfituresController@addConfituresProducteurName')->where('id', "[0-9]+");
-    });
+        Route::group(['middleware' => 'roles:Admin|Producteur'], function () {
+                Route::post('/', 'ConfituresController@addOrUpdateProduct');
+                Route::get('/producteurs', 'ConfituresController@indexProd');
+                Route::get('/producteurs/{id}', 'ConfituresController@addConfituresProducteur')->where('id', "[0-9]+");
+                Route::get('/producteurs/{id}/name', 'ConfituresController@addConfituresProducteurName')->where('id', "[0-9]+");
+        });
 });
 
+Route::get('/', 'ConfituresController@index');
 Route::get('/acfruits', 'ConfituresController@autoComplete');
+
+
 
 
 Route::post('login', 'AuthController@login');

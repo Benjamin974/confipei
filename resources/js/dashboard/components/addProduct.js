@@ -1,6 +1,4 @@
-import Axios from "axios"
-import SearchFruits from '../components/SearchFruits.vue';
-
+import {apiService} from '../_services/apiService.js';
 export default {
     props: {
         confitures: {
@@ -12,9 +10,6 @@ export default {
         modifier: {
             default: false
         },
-    },
-    components: {
-        SearchFruits
     },
 
     data() {
@@ -67,7 +62,7 @@ export default {
             if (val && val.length > 1) {
 
                 this.loading = true
-                axios.get('/api/acfruits', { params: { query: val } })
+                apiService.get('/api/acfruits', { params: { query: val } })
                     .then(({ data }) => {
                         this.loading = false;
                         data.forEach(product => {
@@ -83,7 +78,7 @@ export default {
         ajout() {
             // le fruit doit avoir soit id et name soit juste name
             if (!this.modifier) {
-                axios.post('/api/confitures/', {
+                apiService.post('/api/', {
                     id_producteur: this.producteur.id,
                     name: this.name,
                     prix: this.prix,
@@ -99,26 +94,28 @@ export default {
                 }).catch()
             }
             else if (this.modifier) {
-                axios.post('/api/confitures/', {
-                    id_producteur: this.producteur.id,
-                    name: this.name,
-                    prix: this.prix,
-                    fruit: this.acfruits,
-                    image: this.image,
-                    id: this.id == '' ? '' : this.id,
+                apiService.post('/api/', {
+                        id_producteur: this.producteur.id,
+                        name: this.name,
+                        prix: this.prix,
+                        fruit: this.acfruits,
+                        image: this.image,
+                        id: this.id == '' ? '' : this.id,
 
-                }).then(response => {
-                    this.$emit('addProduct', response.data.data)
-                    this.dialog = false;
-                    this.snackbar = true;
-                    this.text = 'Le produit a bien été modifier'
-                }).catch()
+                    }).then(response => {
+                        this.$emit('addProduct', response.data.data)
+                        this.dialog = false;
+                        this.snackbar = true;
+                        this.text = 'Le produit a bien été modifier'
+                    }).catch()
 
             }
 
         },
 
         editConfiture() {
+            console.log(this.confitures.id_producteur)
+            this.image = this.confitures.image
             this.id = this.confitures.id
             this.name = this.confitures.name
             this.prix = this.confitures.prix
@@ -130,16 +127,18 @@ export default {
 
 
         getProducteur() {
-            Axios.get("/api/confitures").then(({ data }) =>
+            apiService.get("/api/producteurs").then(({ data }) =>
                 data.data.forEach(data => {
-                    this.producteurs.push(data.id_producteur);
+                    this.producteurs.push(data);
                 })
             );
 
 
         },
 
+
         onFileChange(file) {
+            
             let reader = new FileReader;
 
             reader.onload = (file) => {
@@ -147,6 +146,11 @@ export default {
             };
             reader.readAsDataURL(file);
         },
+
+        removeImg() {
+            this.confitures.image = "";
+            this.image = "";
+        }
 
     },
 

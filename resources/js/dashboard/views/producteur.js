@@ -1,6 +1,25 @@
-import Axios from 'axios';
+import {apiService} from '../_services/apiService.js';
+
 export default {
     data: () => ({
+        headers: [{
+            text: "Confitures",
+            align: "start",
+            sortable: false,
+            value: "produit"
+        },
+        { text: "fruits", value: "fruit" },
+        { text: "photos", value: "image" },
+        { text: "actions", value: "actions" },
+
+
+
+        ],
+        editedItem: {
+            Confitures: '',
+            fruits: '',
+            photos: '',
+        },
         confitures: [],
         acfruits: [],
         listFruits: [],
@@ -9,7 +28,7 @@ export default {
 
     methods: {
         initializeConfiture() {
-            Axios.get("/api/producteurs/" + this.$route.params.id).then(({ data }) =>
+            apiService.get("/api/producteurs/" + this.$route.params.id).then(({ data }) =>
                 data.data.forEach(_data => {
                     this.confitures.push(_data);
                     
@@ -18,7 +37,7 @@ export default {
            
         },
         recupName() {
-            Axios.get("/api/producteurs/" + this.$route.params.id + '/name').then((response) => {
+            apiService.get("/api/producteurs/" + this.$route.params.id + '/name').then((response) => {
                 this.name.push(response.data.data);
             })
         },

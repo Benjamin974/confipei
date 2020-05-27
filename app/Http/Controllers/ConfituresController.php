@@ -27,6 +27,12 @@ class ConfituresController extends Controller
         return ConfituresRessource::collection($dataConfi);
     }
 
+    public function indexProd()
+    {
+        $dataProducteur = ProducteursModel::all();
+        return ProducteursRessource::collection($dataProducteur);
+    }
+
     public function addOrUpdateProduct(Request $request)
     {
         $validator = Validator::make(
@@ -66,9 +72,6 @@ class ConfituresController extends Controller
             }
             $dataConfiture->producteur()->associate($producteur);
 
-            if (isset($dataConfiture->image)) {
-                $dataConfiture->save();
-            } else {
                 $img = $request->get('image');
                 $exploded = explode(",", $img);
                 if (str::contains($exploded[0], 'gif')) {
@@ -76,7 +79,11 @@ class ConfituresController extends Controller
                 } else if (str::contains($exploded[0], 'png')) {
                     $ext = 'png';
                 } else {
-                    $ext = 'jpeg';
+                    $ext = 'jpg';
+                }
+
+                if(empty($ext)) {
+                    return 'error';
                 }
                 $decode = base64_decode($exploded[1]);
                 $filename = str::random() . "." . $ext;
@@ -84,7 +91,6 @@ class ConfituresController extends Controller
                 if (file_put_contents($path, $decode)) {
                     $dataConfiture->image = "/storage/imgs/" . $filename;
                 }
-            }
 
             $dataConfiture->save();
 

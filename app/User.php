@@ -41,4 +41,7 @@ class User extends Authenticatable
     function role(){
         return $this->belongsTo(RolesModel::class,'id_role');
     }
+    function producteur(){
+        return $this->hasMany(ProducteursModel::class,'id_user');
+    }
 }

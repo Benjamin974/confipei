@@ -16,8 +16,8 @@ class CreateProducteursTable extends Migration
         Schema::create('producteurs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            
-          
+            $table->bigInteger('id_user')->unsigned();
+            $table->foreign('id_user')->references('id')->on('users');
         });
 
 
