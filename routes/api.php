@@ -27,10 +27,20 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
 });
 
+Route::group(['middleware' => 'auth:api'], function () {
+        Route::group(['middleware' => 'roles:Producteur'], function () {
+                Route::get('/producteurs/confitures', 'ConfituresController@getOfProdcteur');
+                Route::post('/producteurs/confitures', 'ConfituresController@addOrUpdateOfProducteur');
+        });
+});
+
+Route::group(['middleware' => 'auth:api'], function () {
+        Route::group(['middleware' => 'roles:Client'], function () {
+                Route::get('/{id}/producteurs', 'ClientsController@index')->where('id', "[0-9]+");
+        });
+});
 Route::get('/', 'ConfituresController@index');
 Route::get('/acfruits', 'ConfituresController@autoComplete');
-
-
 
 
 Route::post('login', 'AuthController@login');

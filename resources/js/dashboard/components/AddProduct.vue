@@ -23,7 +23,7 @@
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field v-model="prix" :rules="prixRules" label="Prix" required></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+                <v-col v-if="!isProducteur" cols="12" sm="6" md="4">
                   <v-select
                     :rules="id_producteurRules"
                     v-model="producteur"

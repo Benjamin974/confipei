@@ -1,5 +1,4 @@
-import {apiService} from '../_services/apiService.js';
-
+import { apiService } from '../_services/apiService.js';
 export default {
     data: () => ({
         show: false,
@@ -76,7 +75,7 @@ export default {
                             }
                         })
                     }
-                    
+
                 })
                 _productsDisplay.forEach(_confiture => {
                     this.productsDisplay.push(_confiture);

@@ -2,9 +2,11 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from './views/Home.vue';
 import Dashboard from './views/Dashboard.vue';
-import Producteur from './views/Producteur.vue';
+import DashProd from './views/DashProd.vue';
 import Login from './login/Login.vue';
 import CartesConfitures from './views/CartesConfitures.vue';
+import Client from './views/Client.vue';
+import Panier from './views/PagePanier.vue';
 import { Role } from './_helpers/role';
 import { authenticationService } from "./_services/authentication.service";
 
@@ -33,12 +35,24 @@ const router = new VueRouter({
         path: '/confitures',
         name: 'confitures',
         component: CartesConfitures,
-    },{
-        path: '/producteur/:id',
-        name: 'producteur',
-        component: Producteur,
-        meta: { authorize: [Role.Admin] }
     },
+    {
+        path: '/dashboardproducteur',
+        name: 'dashboardproducteur',
+        component: DashProd,
+        meta: { authorize: [Role.Producteur] }
+    },
+    {
+        path: '/client/:id',
+        name: 'client',
+        component: Client,
+        meta: { authorize: [Role.Client] }
+    },
+    {
+        path:'/panier',
+        name: 'panier',
+        component: Panier
+    }
     ]
 })
 

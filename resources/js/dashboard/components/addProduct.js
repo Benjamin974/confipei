@@ -1,4 +1,5 @@
-import {apiService} from '../_services/apiService.js';
+import { apiService } from '../_services/apiService.js';
+import { authenticationService } from '../_services/authentication.service'
 export default {
     props: {
         confitures: {
@@ -53,7 +54,8 @@ export default {
             acfruits: [],
             listFruits: [],
 
-            image: ''
+            image: '',
+            isProducteur: authenticationService.isProducteur,
 
         }
     },
@@ -77,49 +79,45 @@ export default {
     methods: {
         ajout() {
             // le fruit doit avoir soit id et name soit juste name
-            if (!this.modifier) {
-                apiService.post('/api/', {
-                    id_producteur: this.producteur.id,
-                    name: this.name,
-                    prix: this.prix,
-                    fruit: this.acfruits,
-                    image: this.image,
-                    id: this.id == '' ? '' : this.id,
 
-                }).then(response => {
-                    this.dialog = false;
-                    this.$emit('addProduct', response.data.data)
-                    this.snackbar = true;
-                    this.text = 'Le produit a bien été ajouté'
-                }).catch()
-            }
-            else if (this.modifier) {
-                apiService.post('/api/', {
-                        id_producteur: this.producteur.id,
-                        name: this.name,
-                        prix: this.prix,
-                        fruit: this.acfruits,
-                        image: this.image,
-                        id: this.id == '' ? '' : this.id,
-
-                    }).then(response => {
-                        this.$emit('addProduct', response.data.data)
-                        this.dialog = false;
-                        this.snackbar = true;
-                        this.text = 'Le produit a bien été modifier'
-                    }).catch()
+            let dataToAdd = {
+                id_producteur: this.producteur.id,
+                name: this.name,
+                prix: this.prix,
+                fruit: this.acfruits,
+                image: this.image,
+                id: this.id == '' ? '' : this.id,
 
             }
+            if (!this.isProducteur) {
+                dataToAdd['id_producteur'].this.producteur
+            }
+
+            let url = this.isProducteur ? "/api/producteurs/confitures" : "/api/"
+            apiService.post(url, dataToAdd).then(response => {
+                console.log(response.data);
+                // this.dialog = false;
+                // this.$emit('addProduct', response.data.data)
+                // this.snackbar = true;
+                // if (!this.modifier) {
+
+                //     this.text = 'Le produit a bien été ajouté'
+                // }
+                // else if (this.modifier) {
+                //     this.text = 'Le produit a bien été modifier'
+                // }
+            }).catch()
 
         },
 
         editConfiture() {
-            console.log(this.confitures.id_producteur)
             this.image = this.confitures.image
             this.id = this.confitures.id
             this.name = this.confitures.name
             this.prix = this.confitures.prix
-            this.producteur = this.confitures.id_producteur
+            if (!this.isProducteur) {
+                this.producteur = this.confitures.id_producteur
+            }
             this.acfruits = this.confitures.fruit
             _.merge(this.listFruits, this.acfruits)
 
@@ -127,18 +125,19 @@ export default {
 
 
         getProducteur() {
-            apiService.get("/api/producteurs").then(({ data }) =>
-                data.data.forEach(data => {
-                    this.producteurs.push(data);
-                })
-            );
+            if (!this.isProducteur) {
+                apiService.get("/api/producteurs").then(({ data }) =>
+                    data.data.forEach(data => {
+                        this.producteurs.push(data);
+                    })
+                );
 
-
+            }
         },
 
 
         onFileChange(file) {
-            
+
             let reader = new FileReader;
 
             reader.onload = (file) => {
