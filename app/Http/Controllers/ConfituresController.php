@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\CommandesModel;
 use App\ConfituresModel;
 use App\FruitsModel;
+use App\Http\Resources\CommandesResource;
 use App\Http\Resources\ConfituresRessource;
 use App\Http\Resources\ProducteursRessource;
 use App\ProducteursModel;
+use App\User;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ConfituresController extends Controller
@@ -220,7 +225,7 @@ class ConfituresController extends Controller
                     $dataConfiture->producteur()->associate($producteur);
                 }
             }
-            
+
             $img = $request->get('image');
             $exploded = explode(",", $img);
             if (str::contains($exploded[0], 'gif')) {

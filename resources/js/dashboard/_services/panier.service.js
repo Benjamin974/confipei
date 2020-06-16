@@ -1,11 +1,12 @@
 import { EventBus } from '../eventBus'
-
+import { apiService } from '../_services/apiService'
 export const panierServices = {
     ajouter,
     quantiteBasketSize,
     getBasket,
     emitBasket,
-    replaceQuantity
+    replaceQuantity,
+    sendCommande
 
 }
 
@@ -59,6 +60,7 @@ function storeBasket(basket) {
     localStorage.setItem('currentBasket', JSON.stringify(basket));
     EventBus.$emit('basket', basket)
     emitBasketSize(basket)
+
 }
 
 function emitBasketSize(basket) {
@@ -69,11 +71,29 @@ function emitBasketSize(basket) {
 function emitBasket() {
     let basket = getBasket()
     return basket
-    // EventBus.$emit('panier', basketContenu);
 }
 
 function quantiteBasketSize() {
     let quantite = getBasket()
     quantite = _.toPairsIn(quantite).length
     return quantite
+}
+
+function sendCommande(commande) {
+    let basket = getBasket()
+    let commandeList = []
+    for (let key in basket) {
+        let item = {
+            id: basket[key].id,
+            quantite: basket[key].id
+        }
+        commandeList.push(item)
+    }
+    apiService.post('/api/commande', {
+        order: commande.commandeList,
+        adresseLivraison: commande.livraison,
+        adresseFacturation: commande.facturation
+    }).then(({data}) => {
+        console.log(data)
+    });
 }

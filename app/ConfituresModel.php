@@ -14,7 +14,12 @@ class ConfituresModel extends Model
     {
         return $this->belongsTo(ProducteursModel::class, 'id_producteur');
     }
-    
+
+    public function commande()
+    {
+        return $this->belongsToMany('App\CommandesModel', 'commande_has_confiture', 'id_confiture', 'id_commande');
+    }
+
     public function recompense()
     {
         return $this->belongsToMany('App\RecompensesModel', 'confiture_has_recompense', 'id_confiture', 'id_recompense');

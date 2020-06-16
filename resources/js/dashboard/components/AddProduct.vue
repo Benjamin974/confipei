@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="700px">
       <template v-slot:activator="{ on }">
         <v-btn v-if="!modifier" class="ma-2" dark v-on="on" tile outlined color="brown">
-          <v-icon left>mdi-shape-square-plus</v-icon>Ajouter un produit
+          <v-icon>mdi-shape-square-plus</v-icon>Ajouter un produit
         </v-btn>
         <v-icon v-if="modifier" @click="editConfiture" v-on="on" left>mdi-pencil</v-icon>
       </template>

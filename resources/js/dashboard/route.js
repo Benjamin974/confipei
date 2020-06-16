@@ -5,6 +5,7 @@ import Dashboard from './views/Dashboard.vue';
 import DashProd from './views/DashProd.vue';
 import Login from './login/Login.vue';
 import CartesConfitures from './views/CartesConfitures.vue';
+import Confirmation from './views/Stepper.vue';
 import Client from './views/Client.vue';
 import Panier from './views/PagePanier.vue';
 import { Role } from './_helpers/role';
@@ -52,6 +53,11 @@ const router = new VueRouter({
         path:'/panier',
         name: 'panier',
         component: Panier
+    },
+    {
+        path:'/confirmation',
+        name: 'confirmation',
+        component: Confirmation
     }
     ]
 })
